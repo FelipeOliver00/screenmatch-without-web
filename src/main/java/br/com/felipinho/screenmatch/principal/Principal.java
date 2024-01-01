@@ -1,9 +1,6 @@
 package br.com.felipinho.screenmatch.principal;
 
-import br.com.felipinho.screenmatch.model.DadosSerie;
-import br.com.felipinho.screenmatch.model.DadosTemporada;
-import br.com.felipinho.screenmatch.model.Episodio;
-import br.com.felipinho.screenmatch.model.Serie;
+import br.com.felipinho.screenmatch.model.*;
 import br.com.felipinho.screenmatch.repository.SerieRepository;
 import br.com.felipinho.screenmatch.service.ConsumoApi;
 import br.com.felipinho.screenmatch.service.ConverterDados;
@@ -39,6 +36,8 @@ public class Principal {
                     4 - Buscar Série por titulo
                     5 - Buscar Série por Ator
                     6 - Buscar por Top 5 series
+                    7 - Buscar series por categoria
+                    8 - Filtrar séries
                                     
                     0 - Sair                                 
                     """;
@@ -66,6 +65,12 @@ public class Principal {
                 case 6:
                     buscarTop5Series();
                     break;
+                case 7:
+                    buscarSeriesPorCategoria();
+                    break;
+                case 8:
+                    filtrarSeriesPorTemporadaEAvaliacao();
+                    break;
                 case 0:
                     System.out.println("Saindo...");
                     break;
@@ -74,7 +79,6 @@ public class Principal {
             }
         }
     }
-
     private void buscarSerieWeb() {
         DadosSerie dados = getDadosSerie();
         Serie serie = new Serie(dados);
@@ -152,5 +156,26 @@ public class Principal {
     private void buscarTop5Series() {
         List<Serie> serieTop = repositorio.findTop5ByOrderByAvaliacaoDesc();
         serieTop.forEach( s-> System.out.println(s.getTitulo() + "avaliação: " + s.getAvaliacao()));
+    }
+
+    private void buscarSeriesPorCategoria() {
+        System.out.println("Deseja buscar séries de que categoria/gêenero?");
+        var nomeGenero = leitura.nextLine();
+        Categoria categoria = Categoria.fromPortugues(nomeGenero);
+        List<Serie> seriesPorCategoira = repositorio.findByGenero(categoria);
+        System.out.println("Séries da categoria " + nomeGenero);
+        seriesPorCategoira.forEach(System.out::println);
+    }
+
+    private void filtrarSeriesPorTemporadaEAvaliacao() {
+        System.out.println("Filtrar séries até quantas temporadas? ");
+        var totalTemporadas = leitura.nextInt();
+        leitura.nextLine();
+        System.out.println("Com avaliação a partir de qual valor? ");
+        var avaliacao = leitura.nextDouble();
+        leitura.nextLine();
+        List<Serie> filtroSeries = repositorio.findByTotalTemporadasLessThanEqualAndAvaliacaoGreaterThanEqual(totalTemporadas, avaliacao);
+        System.out.println("*** Séries filtradas ***");
+        filtroSeries.forEach(s -> System.out.println(s.getTitulo() + " - avaliação: "+ s.getAvaliacao()));
     }
 }
