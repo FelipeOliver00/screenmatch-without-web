@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
 
-@Entity(name = "series")
+@Entity
+@Table(name = "series")
 public class Serie {
 
     @Id
