@@ -30,7 +30,7 @@ public class Principal {
 
     public void exibeMenu() {
         var opcao = -1;
-        while(opcao != 0) {
+        while (opcao != 0) {
             var menu = """
                     1 - Buscar séries
                     2 - Buscar episódios
@@ -80,6 +80,9 @@ public class Principal {
                     break;
                 case 10:
                     topEpisodiosPorSerie();
+                    break;
+                case 11:
+                    buscarEpisodiosDepoisDeUmaData();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -206,6 +209,19 @@ public class Principal {
             topEppisodios.forEach(e -> System.out.printf("Série: %s Temporada %s - Episódio %s - %s\n",
                     e.getSerie().getTitulo(), e.getTemporada(),
                     e.getNumeroEpisodio(), e.getTitulo(), e.getAvaliacao()));
+        }
+    }
+
+    private void buscarEpisodiosDepoisDeUmaData() {
+        buscarSeriePorTitulo();
+        if(serieBusca.isPresent()) {
+            Serie serie = serieBusca.get();
+            System.out.println("Digite o ano limite de lançamento");
+            var anoLancamento = leitura.nextInt();
+            leitura.nextLine();
+
+            List<Episodio> episodiosAno = repositorio.episodioPorSerieEAno(serie, anoLancamento);
+            episodiosAno.forEach(System.out::println);
         }
     }
 
